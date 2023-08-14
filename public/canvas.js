@@ -1,12 +1,3 @@
-const init = () => {
-    player.x = Math.floor(Math.random() * WW);
-    player.y = Math.floor(Math.random() * WH);
-    draw();
-
-}
-
-
-
 const draw = () => {
     context.setTransform(1, 0, 0, 1, 0, 0);
     context.clearRect(0, 0, canvas.width, canvas.height);
@@ -15,25 +6,25 @@ const draw = () => {
     const camY = -player.y + canvas.height / 2;
     context.translate(camX, camY);
     
-    context.beginPath();
-    context.fillStyle = 'rgb(255, 0, 0)';
-    context.arc(player.x, player.y, 10, 0, 2 * Math.PI);
-    context.fill();
-    context.lineWidth = 2;
-    context.strokeStyle = 'rgb(255, 255, 255)';
-    context.stroke();
+    players.forEach((p) => {
+        context.beginPath();
+        context.fillStyle = p.playerData.color;
+        context.arc(p.playerData.x, p.playerData.y, p.playerData.radius, 0, 2 * Math.PI);
+        context.fill();
+        context.lineWidth = 2;
+        context.strokeStyle = 'rgb(255, 255, 255)';
+        context.stroke();
+    });
     
     orbs.forEach((orb) => {
         context.beginPath();
         context.fillStyle = orb.color;
-        context.arc(orb.locX, orb.locY, orb.radius, 0, 2 * Math.PI);
+        context.arc(orb.x, orb.y, orb.radius, 0, 2 * Math.PI);
         context.fill();
-    }); 
+    });
     
     requestAnimationFrame(draw);
 }
-
-init();
 
 canvas.addEventListener('mousemove', (event) => {
     const mousePosition = {
@@ -54,17 +45,7 @@ canvas.addEventListener('mousemove', (event) => {
         xVector = (angleDeg + 90) / 90;
         yVector = (1 - ((angleDeg + 90) / 90));
     }
-
-    speed = 10
-    xV = xVector;
-    yV = yVector;
-
-    if ((player.x < 5 && xV < 0) || (player.x > WW) && (xV > 0)) {
-        player.y -= speed * yV;
-    } else if ((player.y < 5 && yV > 0) || (player.y > WH) && (yV < 0)) {
-        player.x += speed * xV;
-    } else {
-        player.x += speed * xV;
-        player.y -= speed * yV;
-    }
+    
+    player.xVector = xVector ? xVector : .1;
+    player.yVector = yVector ? yVector : .1;
 })

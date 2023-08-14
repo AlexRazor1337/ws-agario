@@ -1,4 +1,5 @@
-const player = {};
+let player = {};
+let players = [];
 let orbs = [];
 
 let WH = window.innerHeight;
@@ -34,4 +35,6 @@ document.getElementById('play-solo-btn').addEventListener('click', () => {
         el.hidden = false;
     });
     
+    
+    init();
 });

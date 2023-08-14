@@ -1,4 +1,6 @@
-const socket = io.connect('http://localhost:9001');
+const SERVER_URL = 'http://localhost:9001';
+
+const socket = io.connect(SERVER_URL);
 
 const init = async () => {
     const initdData = await socket.emitWithAck('init', {
@@ -31,7 +33,7 @@ socket.on('tick', (newPlayers) => {
 
 // On disconnect, refresh the page
 socket.on('disconnect', () => {
-    window.location.href = 'http://localhost:9001';
+    window.location.href = window.location.href + '/';
 });
 
 socket.on('orb-update', (data) => {
@@ -54,6 +56,7 @@ socket.on('update-leaderboard', (data) => {
     document.querySelector('.leader-board').innerHTML = '';
     data.forEach((player) => {
         if (!player.name) return;
+        
         document.querySelector('.leader-board').innerHTML += `
             <li class="leaderboard-player">${player.name} - ${player.score}</li>`
 

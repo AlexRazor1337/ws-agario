@@ -7,6 +7,8 @@ const draw = () => {
     context.translate(camX, camY);
     
     players.forEach((p) => {
+        if (!p.playerData) return;
+        
         context.beginPath();
         context.fillStyle = p.playerData.color;
         context.arc(p.playerData.x, p.playerData.y, p.playerData.radius, 0, 2 * Math.PI);
@@ -14,6 +16,12 @@ const draw = () => {
         context.lineWidth = 2;
         context.strokeStyle = 'rgb(255, 255, 255)';
         context.stroke();
+        
+        context.fillStyle = 'rgb(255, 255, 255)';
+        context.font = 'bold 12px Arial';
+        context.textAlign = 'center';
+        context.textBaseline = 'middle';
+        context.fillText(p.playerData.name, p.playerData.x, p.playerData.y - p.playerData.radius - 10);
     });
     
     orbs.forEach((orb) => {

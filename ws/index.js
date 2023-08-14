@@ -3,12 +3,13 @@ import { Orb } from './classes/Orb.js';
 import { Player } from './classes/Player.js';
 import { PlayerConfig } from './classes/PlayerConfig.js';
 import { PlayerData } from './classes/PlayerData.js';
+import { checkForOrbCollisions, checkForPlayerCollisions } from './col.js';
 
 const settings = {
-    worldHeight: process.env.WORLD_HEIGHT,
-    worldWidth: process.env.WORLD_WIDTH,
-    orbRadius: process.env.DEFAULT_SIZE,
-    orbCount: process.env.ORB_COUNT,
+    worldHeight: parseInt(process.env.WORLD_HEIGHT),
+    worldWidth: parseInt(process.env.WORLD_WIDTH),
+    orbRadius: parseInt(process.env.DEFAULT_SIZE),
+    orbCount: parseInt(process.env.ORB_COUNT),
     defaultZoom: parseFloat(process.env.DEFAULT_ZOOM),
     defaultSpeed: parseInt(process.env.DEFAULT_SPEED)
 };
@@ -43,8 +44,6 @@ io.on('connect', (socket) => {
         player = new Player(socket.id, playerConfig, playerData);
         players.push(player);
         playersForUsers.push(playerData);
-        
-        console.log(playerConfig);
 
         callback({
             orbs,
@@ -57,16 +56,28 @@ io.on('connect', (socket) => {
         const speed = 6;
         const xV = player.playerConfig.xVector = data.xVector;
         const yV = player.playerConfig.yVector = data.yVector;
-        
-        console.log('tick', speed, data);
 
-        if ((player.playerData.x < 5 && xV < 0) || (player.playerData.x > settings.worldWidth) && (xV > 0)) {
-            player.playerData.y -= speed * yV;
-        } else if ((player.playerData.y < 5 && yV > 0) || (player.playerData.y > settings.worldHeight) && (yV < 0)) {
+        if ((player.playerData.x > 5 && xV < 0) || (player.playerData.x < settings.worldWidth) && (xV > 0)) {
             player.playerData.x += speed * xV;
-        } else {
-            player.playerData.x += speed * xV;
+        }
+        if ((player.playerData.y > 5 && yV > 0) || (player.playerData.y < settings.worldHeight) && (yV < 0)) {
             player.playerData.y -= speed * yV;
+        }
+        
+        const capturedOrb = checkForOrbCollisions(player.playerData, player.playerConfig, orbs, settings);
+        if (capturedOrb) {
+            orbs.splice(capturedOrb, 1, new Orb(settings));
+            const orbData = {
+                capturedOrb,
+                newOrb: orbs[capturedOrb]
+            }
+            
+            io.to('game').emit('orb-update', orbData);
+        }
+        
+        const capturedPlayerData = checkForPlayerCollisions(player.playerData, player.playerConfig, players, playersForUsers, socket.id);
+        if (capturedPlayerData) {
+            io.to('game').emit('player-absorb', capturedPlayerData);
         }
     });
 

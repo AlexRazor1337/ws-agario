@@ -34,6 +34,22 @@ setInterval(() => {
     }
 }, Math.floor(1000 / 30));
 
+const getLeaderboard = () => {
+    playersForUsers.sort((a, b) => {
+            return b.score - a.score;
+        }
+        ).slice(0, 5);
+        
+    return playersForUsers.map((player) => {
+        if (player.playerData) {
+            const { name, score } = player.playerData;
+            return { name, score };
+        } else {
+            return { }
+        }
+    });
+};
+
 io.on('connect', (socket) => {
     let player = {};
     socket.on('init', (data, callback) => {
@@ -73,19 +89,21 @@ io.on('connect', (socket) => {
             }
             
             io.to('game').emit('orb-update', orbData);
+            io.to('game').emit('update-leaderboard', getLeaderboard());
         }
         
         const capturedPlayerData = checkForPlayerCollisions(player.playerData, player.playerConfig, players, playersForUsers, socket.id);
         if (capturedPlayerData) {
             io.to('game').emit('player-absorb', capturedPlayerData);
+            io.to('game').emit('update-leaderboard', getLeaderboard());
         }
     });
 
     socket.on('disconnect', (data) => {
         players.forEach((player, index) => {
             if (socket.id === player.socketId) {
-                players.splice(index, 1);
-                playersForUsers.splice(index, 1);
+                players.splice(index, 1, {});
+                playersForUsers.splice(index, 1, {});
             }
         });
     });

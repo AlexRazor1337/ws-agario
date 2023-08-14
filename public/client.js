@@ -42,5 +42,20 @@ socket.on('orb-update', (data) => {
 });
 
 socket.on('player-absorb', (data) => {
-    console.log(data);
+    document.querySelector('#game-message').innerHTML = `${data.absorber} absorbed ${data.absorbee}!`;
+    document.querySelector('#game-message').style.opacity = 1;
+    
+    setTimeout(() => {
+        document.querySelector('#game-message').style.opacity = 0;
+    }, 2000);
+});
+
+socket.on('update-leaderboard', (data) => {
+    document.querySelector('.leader-board').innerHTML = '';
+    data.forEach((player) => {
+        if (!player.name) return;
+        document.querySelector('.leader-board').innerHTML += `
+            <li class="leaderboard-player">${player.name} - ${player.score}</li>`
+
+    });
 });

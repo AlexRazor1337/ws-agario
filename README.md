@@ -2,7 +2,7 @@
 
 This project is a basic clone of a famous multiplayer browser game, featuring both the client and server components. It's built using Node.js, socket.io, and Express.
 
-![image](https://github.com/AlexRazor1337/ws-agario/assets/26604491/0f4db43b-3a35-4338-a0df-7e0efef12f35)
+![image](docs/image.jpg)
 
 
 ## Features

@@ -6,6 +6,7 @@ dotenv.config();
 import express from 'express';
 import bcrypt from 'bcryptjs';
 import { Server } from "socket.io";
+import compression from 'compression';
 import { instrument } from '@socket.io/admin-ui';
 
 const __dirname = path.resolve();
@@ -13,6 +14,7 @@ const __dirname = path.resolve();
 export const app = express();
 
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(compression());
 
 const expressServer = app.listen(process.env.PORT || 3000, () => {
     console.log(`Server is running on http://localhost:${process.env.PORT || 3000}`);

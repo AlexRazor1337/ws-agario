@@ -42,6 +42,5 @@ document.getElementById('play-solo-btn').addEventListener('click', () => {
         el.hidden = false;
     });
     
-    
     init();
 });

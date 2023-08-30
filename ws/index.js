@@ -41,9 +41,9 @@ const getLeaderboard = () => {
         ).slice(0, 5);
         
     return playersForUsers.map((player) => {
-        if (player.playerData) {
-            const { name, score } = player.playerData;
-            return { name, score };
+        if (player.name) {
+            const { name, score, orbsAbsorbed, playersAbsorbed } = player;
+            return { name, score, orbsAbsorbed, playersAbsorbed  };
         } else {
             return { }
         }

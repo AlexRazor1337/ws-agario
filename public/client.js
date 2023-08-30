@@ -20,6 +20,9 @@ const init = async () => {
     player.x = Math.floor(Math.random() * WW);
     player.y = Math.floor(Math.random() * WH);
     draw();
+    
+    document.querySelector('.leader-board').innerHTML = `
+        <li class="leaderboard-player">${player.name} - <span class="player-score">0</span></li>`;
 }
 
 socket.on('tick', (newPlayers) => {
@@ -37,14 +40,11 @@ socket.on('disconnect', () => {
 });
 
 socket.on('orb-update', (data) => {
-    console.log('orb-update', orbs[data.capturedOrb].x, data.newOrb.x);
     orbs.splice(data.capturedOrb, 1, data.newOrb);
-    console.log('orb-update f', orbs[data.capturedOrb].x, data.newOrb.x);
-    
 });
 
 socket.on('player-absorb', (data) => {
-    document.querySelector('#game-message').innerHTML = `${data.absorber} absorbed ${data.absorbee}!`;
+    document.querySelector('#game-message').innerHTML = `${data.absorbedBy} absorbed ${data.absorbed}!`;
     document.querySelector('#game-message').style.opacity = 1;
     
     setTimeout(() => {
@@ -54,11 +54,14 @@ socket.on('player-absorb', (data) => {
 
 socket.on('update-leaderboard', (data) => {
     document.querySelector('.leader-board').innerHTML = '';
-    data.forEach((player) => {
-        if (!player.name) return;
+    data.forEach((newPlayer) => {
+        if (!newPlayer.name) return;
+        if (player.name == newPlayer.name) {
+            document.querySelector('.player-score').textContent = newPlayer.score;
+        }
         
         document.querySelector('.leader-board').innerHTML += `
-            <li class="leaderboard-player">${player.name} - ${player.score}</li>`
+            <li class="leaderboard-player">${newPlayer.name} - ${newPlayer.score}</li>`
 
     });
 });

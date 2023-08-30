@@ -108,19 +108,6 @@ canvas {
 	color: #FFFFFF;
 }
 
-#join-team-btn,
-#play-solo-btn,
-#create-team-btn,
-#create-play-solo-btn,
-#add-team-btn {
-	width: 48%;
-	margin: 5px auto 15px;
-	font-size: 18px;
-	display: inline-block;
-	background-color: #00e6e6;
-	color: #FFFFFF;
-}
-
 #create-team-btn,
 #add-team-btn,
 #join-team-btn {
@@ -184,12 +171,6 @@ canvas {
 #create-team-btn,
 #add-team-btn {
 	float: left;
-}
-
-.all-stats-btn,
-#play-solo-btn,
-#create-play-solo-btn {
-	float: right;
 }
 
 .stats,

@@ -27,6 +27,7 @@ const expressServer = app.listen(process.env.PORT || 3000, () => {
 export const io = new Server(expressServer, {
     cors: {
         origin: [process.env.CORS_ORIGIN, `http://localhost:${process.env.PORT}`],
+        allowedHeaders: ['Access-Control-Allow-Origin', 'Access-Control-Allow-Credentials'],
         credentials: true,
     }
 });
